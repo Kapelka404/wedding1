@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Свадьба Кирилла и Александры</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: #ffffff;
+            color: #1a1a4e; 
+            margin: 0; 
+            padding: 30px 15px; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+        }
+        
+        .container { 
+            max-width: 480px; 
+            width: 100%; 
+            text-align: center; 
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 15px;
+        }
+        
+        h1, h2, h3, .script-font { 
+            font-family: 'Playfair Display', serif; 
+            font-style: italic; 
+            margin: 20px 0 10px; 
+            font-weight: 400;
+        }
+        
+        h1.names {
+            font-size: 34px;
+            line-height: 1.3;
+            margin-top: 15px;
+        }
+        h1.names .ampersand {
+            font-size: 24px;
+            opacity: 0.6;
+            display: block;
+            margin: 2px 0;
+        }
+        
+        h2 { 
+            font-size: 26px; 
+            margin: 25px 0 15px;
+        }
+        
+        p { 
+            font-size: 15px; 
+            line-height: 1.7; 
+            font-weight: 300;
+        }
+
+        .divider { 
+            width: 50px; 
+            height: 2px; 
+            background: #1a1a4e; 
+            margin: 30px auto; 
+            opacity: 0.15; 
+        }
+
+        .timer { 
+            display: flex; 
+            justify-content: center; 
+            gap: 25px; 
+            margin: 20px 0; 
+        }
+        
+        .timer-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        
+        .timer-item span:first-child { 
+            font-size: 30px; 
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+        }
+        
+        .timer-item span:last-child { 
+            font-size: 9px; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            margin-top: 2px;
+        }
+
+        .btn { 
+            display: inline-block; 
+            background-color: #1a1a4e; 
+            color: #fff; 
+            padding: 14px 40px; 
+            border-radius: 50px; 
+            text-decoration: none; 
+            font-size: 13px; 
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin: 10px 0; 
+            border: none; 
+            cursor: pointer; 
+            width: 85%; 
+            box-sizing: border-box; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(26, 26, 78, 0.15);
+        }
+        
+        .btn:hover { 
+            background-color: #c9a84c; 
+            color: #1a1a4e; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 168, 76, 0.3);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .form-group { 
+            text-align: left; 
+            margin: 15px 0; 
+        }
+        
+        label { 
+            font-size: 14px; 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: 400;
+        }
+        
+        input[type="text"], textarea { 
+            margin: 5px 0; 
+            padding: 14px; 
+            border: 1px solid rgba(26, 26, 78, 0.2); 
+            border-radius: 12px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            font-family: 'Montserrat', sans-serif; 
+            font-weight: 300;
+            background: #ffffff;
+            transition: 0.3s;
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #1a1a4e;
+            box-shadow: 0 0 0 3px rgba(26, 26, 78, 0.1);
+        }
+        
+        .radio-group { 
+            margin: 10px 0; 
+        }
+        
+        .radio-group label { 
+            display: inline-block; 
+            margin: 5px 0; 
+            cursor: pointer; 
+            font-weight: 300;
+        }
+        
+        input[type="radio"] { 
+            margin-right: 8px; 
+            accent-color: #1a1a4e;
+            transform: scale(1.1);
+        }
+
+        .map-container { 
+            border: 1px solid rgba(26, 26, 78, 0.2); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            margin: 20px 0; 
+        }
+        
+        iframe { 
+            width: 100%; 
+            height: 220px; 
+            border: 0; 
+        }
+        
+        .crest {
+            max-width: 220px;
+            width: 100%;
+            height: auto;
+            margin: 10px auto 15px;
+            display: block;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .illustration { 
+            width: 110px; 
+            margin: 12px auto 5px; 
+            display: block; 
+            opacity: 1;
+        }
+
+        .illustration-big { 
+            width: 140px; 
+            margin: 12px auto 5px; 
+            display: block; 
+            opacity: 1;
+        }
+        
+        .calendar-img { width: 100%; border-radius: 12px; border: 1px solid rgba(26, 26, 78, 0.15); padding: 10px; box-sizing: border-box; background: #ffffff; }
+
+        .timing-block { margin: 30px 0; }
+        .timing-block strong { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; display: block; margin-bottom: 3px; }
+        .timing-block span { font-size: 15px; font-weight: 300; display: block; margin-bottom: 8px; }
+
+        @keyframes softReveal {
+            from { 
+                opacity: 0; 
+                transform: translateY(40px) scale(0.95); 
+                filter: blur(6px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+                filter: blur(0);
+            }
+        }
+        
+        .container > * {
+            opacity: 0;
+            animation: softReveal 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            will-change: transform, opacity, filter;
+        }
+        
+        .container .crest { animation-delay: 0.1s; }
+        .container h1 { animation-delay: 0.2s; }
+        .container .timer { animation-delay: 0.35s; }
+        .container .divider { animation-delay: 0.55s; }
+        .container h2 { animation-delay: 0.7s; }
+        .container p, .container .timing-block { animation-delay: 0.85s; }
+        .container form { animation-delay: 1.0s; }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-80px);
+            background: #ffffff;
+            color: #1a1a4e;
+            padding: 16px 28px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(26, 26, 78, 0.15);
+            border: 1px solid rgba(26, 26, 78, 0.08);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 999;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+            max-width: 90%;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast .check {
+            color: #1a1a4e;
+            font-size: 20px;
+        }
+        .toast .check.error {
+            color: #e74c3c;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 10px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST -->
+    <div id="successToast" class="toast">
+        <span class="check" id="toastIcon">✔</span>
+        <span id="toastMessage">Спасибо! Ваш ответ отправлен. Ждем вас!</span>
+    </div>
+
+    <div class="container">
+        <img src="https://psv4.vkuserphoto.ru/s/v1/d2/Wfwd4poKsURRPyaeRCYJjSayTzPHAhSywGmtmfQcmtCp1Z1JJlLMMbJZGhiF-0N0cGw_e6lPF-tzATNRRLpZ1gheaMR3OEEJB63NyQD7MlxTwCKmWx4dGVtoe8241n5y-E8lgQb_jvw6/DpwH-9-cr25yA1KEO38Ph6TDJ-jXhVy3KmNbG3bijVWe4OxPmcS1Q8jGgSUNOOn9AEvRoT0zXaeMeyFTV8unF4GT-fotor-bg-remover-20260706233012.png" class="crest" alt="Герб">
+        
+        <h1 class="names">
+            Кирилл
+            <span class="ampersand">и</span>
+            Александра
+        </h1>
+        
+        <h2 style="font-size: 20px; opacity: 0.7; margin-top: -5px;">14 августа 2026</h2>
+        
+        <p style="text-transform: uppercase; letter-spacing: 2px; font-size: 11px; margin-top: 20px;">До свадьбы осталось:</p>
+        
+        <div class="timer">
+            <div class="timer-item"><span id="days">0</span><span>дней</span></div>
+            <div class="timer-item"><span id="hours">0</span><span>часов</span></div>
+            <div class="timer-item"><span id="minutes">0</span><span>минут</span></div>
+            <div class="timer-item"><span id="seconds">0</span><span>секунд</span></div>
+        </div>
+        
+        <div class="divider"></div>
+
+        <h2>Дорогие друзья и родные!</h2>
+        <p id="invitationText">
+            Приглашаем Вас разделить с нами этот день —<br>день рождения семьи Каплиных.
+        </p>
+
+        <div id="friendsExtraText" style="display: none; margin-top: 15px;">
+            <p style="font-style: italic; opacity: 0.8;">
+                ❤️ 14 августа мы планируем тихое семейное торжество в ЗАГСе.<br><br>
+                Но мы будем рады видеть вас <strong>15 августа</strong> на наших праздничных шашлыках!<br>
+                Без нарядов, без пафоса — просто по-домашнему, с близкими и вкусным мясом.
+            </p>
+        </div>
+        
+        <div class="divider"></div>
+
+        <div class="calendar-img" style="background: #ffffff; padding: 20px;">
+            <h3 style="margin: 0; font-weight: 400;">Август 2026</h3>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 15px; font-size: 14px;">
+                <span style="opacity: 0.5;">ПН</span><span style="opacity: 0.5;">ВТ</span><span style="opacity: 0.5;">СР</span><span style="opacity: 0.5;">ЧТ</span><span style="opacity: 0.5;">ПТ</span><span style="opacity: 0.5;">СБ</span><span style="opacity: 0.5;">ВС</span>
+                <span></span><span></span><span></span><span></span><span></span><span>1</span><span>2</span>
+                <span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                <span>10</span><span>11</span><span>12</span><span>13</span><span style="border: 2px solid #c9a84c; border-radius: 50%; padding: 2px; color: #c9a84c; font-weight: bold;">14</span><span id="day15">15</span><span>16</span>
+                <span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span>
+                <span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span>
+                <span>31</span>
+            </div>
+            <div style="margin-top: 10px; color: #c9a84c; font-size: 22px;">❤</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>Место проведения</h2>
+        <p><strong>Дворец бракосочетаний</strong><br>
+        Адрес: город Бугульма, ул. Ярослава Гашека, д. 1</p>
+        
+        <div class="map-container">
+            <iframe src="https://yandex.ru/map-widget/v1/?ll=52.7772%2C54.5360&z=15&pt=52.7772%2C54.5360&text=Бугульма%20Ярослава%20Гашека%201" allowfullscreen></iframe>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>Тайминг</h2>
+        
+        <div class="timing-block">
+            <strong>13:30</strong>
+            <span>Сбор гостей</span>
+            <img src="https://sun9-50.vkuserphoto.ru/s/v1/ig2/fLV2RJJ8NCU7I_7qKcjCo7iLmwyFtwPNgr_Xfipn8FMAJb8TLoqiXnuOj43UkW1sE99F15YmNckCkJ2fJRnQYsFA.jpg?quality=95&as=32x23,48x34,72x51,108x77,160x114,240x170,360x255,480x341,540x383,640x454,720x511,1080x766,1178x836&from=bu&u=w7xzNwPuuXDuofB9OT9JNNtrgy74pVmRPQVGm6dPKGQ&cs=1178x0" class="illustration-big" alt="Сбор гостей">
+        </div>
+        
+        <div class="timing-block">
+            <strong>14:00</strong>
+            <span>Торжественная регистрация</span>
+            <img src="https://sun9-6.vkuserphoto.ru/s/v1/ig2/vMrgeV-L-7aY6bc5u1Eyerv0q4HD8yuQrZ-6SZ-NRN-rub1EmsWskgQOp6Zx9H2UlbtdhGFr_hJ8RAufklBi6KCa.jpg?quality=95&as=32x12,48x18,72x27,108x41,160x61,240x91,360x136,480x182,540x204,640x242,720x273,1080x409,1178x446&from=bu&cs=1178x0" class="illustration-big" alt="Регистрация">
+        </div>
+        
+        <div class="timing-block">
+            <strong>14:30 – 15:30</strong>
+            <span>Поздравления, шампанское, памятные фото</span>
+            <img src="https://psv4.vkuserphoto.ru/s/v1/d2/kUYBwO9GSzztMzR-RKFLxdwonYUTvM7GLh-iEje5bthOAEHdRUyu-3gY24qd1Y8VwnCDtRNXCNXHuJDoWOyYIxE178hacp-VuPc9zAem0igvI3n5HuaosH_YkKOSt50Rs-f83tn95n4k/1u_-6NSolPTIgr_CST5BCtEl_T1ZJNlV3XO6AEDxjd0aAHFWBQ5ybkB2b82IpAYoXIKQY_NYYPLNwlcQk6JnZy_--fotor-bg-remover-20260706233629.png" class="illustration" alt="Поздравления">
+        </div>
+
+        <div id="banquetBlock" class="timing-block">
+            <strong>18:00</strong>
+            <span>Банкет</span>
+            <img src="https://sun9-40.vkuserphoto.ru/s/v1/ig2/M8u29Gx2H84BK1Bae21JvdKsvJK2ANHGZZVsjYTgfwfTL1lDUDCnBTJYxyiRaoy3ueFqslOtqjK1d2RjOWjtu21k.jpg?quality=95&as=32x32,48x49,72x73,108x110,160x162,240x243,360x365,480x487,540x548,640x649,720x730,1080x1096,1177x1194&from=bu&u=1jd4I05wQOZJcvi4a-jOCOsoWYMitZUh4ZCKL50-E6M&cs=1177x0" class="illustration" alt="Банкет">
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>Дресс-код</h2>
+        <p>Его нет :) Но если Вы придёте в одежде тёмного цвета, то получатся очень красивые контрастные фото ❤</p>
+
+        <div class="divider"></div>
+
+        <h2>Пожелания</h2>
+        <p>Просим по возможности воздержаться от покупки букетов в день свадьбы, так как впереди нас ждёт дорога в Москву и свадебное путешествие. Мы просто не успеем как следует насладиться цветами.</p>
+
+        <div class="divider"></div>
+
+        <h2>Анкета гостя</h2>
+        <p style="font-size: 13px; opacity: 0.7; margin-bottom: 20px;">Пожалуйста, подтвердите присутствие</p>
+        
+        <form id="guestForm">
+            <div class="form-group">
+                <label>Ваше имя и фамилия</label>
+                <input type="text" id="name" required placeholder="Например, Иван Иванов">
+            </div>
+
+            <div id="mainQuestion" class="form-group">
+                <label>Подтвердите свое присутствие</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="presence" value="Да, буду" required> Да, буду</label><br>
+                    <label><input type="radio" name="presence" value="К сожалению, не смогу"> К сожалению, не смогу</label>
+                </div>
+            </div>
+
+            <div id="friendsQuestion" style="display: none;" class="form-group">
+                <label>Выберите, как планируете быть:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="presence" value="Приду только на ЗАГС (14 августа)" required> Приду только на ЗАГС (14 августа)</label><br>
+                    <label><input type="radio" name="presence" value="Приду только на шашлыки (15 августа)"> Приду только на шашлыки (15 августа)</label><br>
+                    <label><input type="radio" name="presence" value="Приду и на ЗАГС, и на шашлыки"> Приду и на ЗАГС, и на шашлыки</label><br>
+                    <label><input type="radio" name="presence" value="К сожалению, не смогу"> К сожалению, не смогу</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Состав (вторые половинки, дети)</label>
+                <input type="text" id="companion" placeholder="Укажите имена">
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">ОТПРАВИТЬ</button>
+        </form>
+
+        <div class="divider"></div>
+
+        <h2 style="font-size: 32px; margin-top: 40px;">С нетерпением<br>ждем Вас!</h2>
+        <p style="font-size: 12px; opacity: 0.4; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase;">До встречи!</p>
+    </div>
+
+    <audio id="bgMusic" src="https://raw.githubusercontent.com/Kapelka404/wedding/main/Edith%20Piaf%20(%D0%AD%D0%B4%D0%B8%D1%82%20%D0%9F%D0%B8%D0%B0%D1%84)%20-%20La%20Foule.mp3" loop preload="auto"></audio>
+
+    <script>
+        // ===== МУЗЫКА =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('bgMusic');
+            audio.volume = 0.3;
+
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    const startOnFirstClick = () => {
+                        audio.play().catch(() => {});
+                        document.removeEventListener('click', startOnFirstClick);
+                        document.removeEventListener('touchstart', startOnFirstClick);
+                    };
+                    document.addEventListener('click', startOnFirstClick);
+                    document.addEventListener('touchstart', startOnFirstClick);
+                });
+            }
+        });
+
+        // ===== ОПРЕДЕЛЯЕМ ГРУППУ =====
+        const urlParams = new URLSearchParams(window.location.search);
+        const group = urlParams.get('group') || 'family';
+
+        if (group === 'family') {
+            // Близкие: всё как есть
+        } else if (group === 'relatives') {
+            document.getElementById('banquetBlock').style.display = 'none';
+        } else if (group === 'friend') {
+            document.getElementById('banquetBlock').style.display = 'none';
+            document.getElementById('friendsExtraText').style.display = 'block';
+            document.getElementById('mainQuestion').style.display = 'none';
+            document.getElementById('friendsQuestion').style.display = 'block';
+            document.getElementById('day15').style.border = '2px solid #27ae60';
+            document.getElementById('day15').style.borderRadius = '50%';
+            document.getElementById('day15').style.padding = '2px';
+            document.getElementById('day15').style.color = '#27ae60';
+            document.getElementById('day15').style.fontWeight = 'bold';
+        }
+
+        // ===== ФУНКЦИЯ ДЛЯ ПОКАЗА TOAST =====
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('successToast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+            
+            icon.textContent = isSuccess ? '✔' : '⚠️';
+            icon.className = 'check' + (isSuccess ? '' : ' error');
+            msg.textContent = message;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        // ===== ОТПРАВКА ФОРМЫ ЧЕРЕЗ GitHub ISSUES =====
+        document.getElementById("guestForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'ОТПРАВКА...';
+            
+            const name = document.getElementById("name").value.trim();
+            if (!name) {
+                showToast('Пожалуйста, укажите ваше имя', false);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ОТПРАВИТЬ';
+                return;
+            }
+            
+            const presenceElement = document.querySelector('input[name="presence"]:checked');
+            if (!presenceElement) {
+                showToast('Пожалуйста, выберите вариант ответа', false);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ОТПРАВИТЬ';
+                return;
+            }
+            
+            const presence = presenceElement.value;
+            const companion = document.getElementById("companion").value.trim() || "Нет";
+            
+            try {
+                // Создаем Issue с данными гостя
+                const response = await fetch('https://api.github.com/repos/Kapelka404/wedding/issues', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: `[RSVP] ${name}`,
+                        body: `Имя: ${name}\nПрисутствие: ${presence}\nКомпания: ${companion}\nГруппа: ${group}`
+                    })
+                });
+                
+                if (response.ok) {
+                    showToast('Спасибо! Ваш ответ отправлен. Ждем вас!', true);
+                    this.reset();
+                } else {
+                    throw new Error('Ошибка отправки');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showToast('Ошибка при отправке. Попробуйте позже.', false);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ОТПРАВИТЬ';
+            }
+        });
+
+        // ===== ТАЙМЕР =====
+        const weddingDate = new Date("2026-08-14T13:30:00+03:00").getTime();
+        const timer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            if (distance < 0) {
+                clearInterval(timer);
+                document.querySelector(".timer").innerHTML = "<h2>Свадьба уже сегодня!</h2>";
+                return;
+            }
+
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerText = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+        }, 1000);
+    </script>
+</body>
+</html>
