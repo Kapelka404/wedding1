@@ -1,172 +1,167 @@
     <script>
-        let currentGroup = 'all';
-        let allGuests = [];
+        // ===== МУЗЫКА =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('bgMusic');
+            audio.volume = 0.3;
 
-        // ID вашего бинa (получите после первого POST запроса)
-        const BIN_ID = '672f3a9aad19ca34f8e22f3e'; // Замените на ваш ID
-
-        function getGroupLabel(group) {
-            const labels = { 'family': 'Близкие', 'relatives': 'Дальние', 'friend': 'Друзья' };
-            return labels[group] || group || 'Неизвестно';
-        }
-
-        function getGroupClass(group) {
-            const classes = { 'family': 'group-family', 'relatives': 'group-relatives', 'friend': 'group-friend' };
-            return classes[group] || '';
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        function switchTab(group) {
-            currentGroup = group;
-            renderData();
-        }
-
-        async function loadData() {
-            const container = document.getElementById('responsesContainer');
-            container.innerHTML = `<div class="loading">⏳ Загрузка данных...</div>`;
-
-            try {
-                // Читаем данные из JSONBin
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: {
-                        'X-Master-Key': '$2a$10$QhnCxkKJyEomRZhI.4nV8Oj7hxSzP.Zt7Jh6p6C3VSPExG5J0FYeK'
-                    }
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    const startOnFirstClick = () => {
+                        audio.play().catch(() => {});
+                        document.removeEventListener('click', startOnFirstClick);
+                        document.removeEventListener('touchstart', startOnFirstClick);
+                    };
+                    document.addEventListener('click', startOnFirstClick);
+                    document.addEventListener('touchstart', startOnFirstClick);
                 });
-                
-                if (!response.ok) {
-                    allGuests = [];
-                    renderData();
-                    return;
+            }
+        });
+
+        // ===== ОПРЕДЕЛЯЕМ ГРУППУ =====
+        const urlParams = new URLSearchParams(window.location.search);
+        const group = urlParams.get('group') || 'family';
+
+        if (group === 'family') {
+            // Близкие: всё как есть
+        } else if (group === 'relatives') {
+            document.getElementById('banquetBlock').style.display = 'none';
+        } else if (group === 'friend') {
+            document.getElementById('banquetBlock').style.display = 'none';
+            document.getElementById('friendsExtraText').style.display = 'block';
+            document.getElementById('mainQuestion').style.display = 'none';
+            document.getElementById('friendsQuestion').style.display = 'block';
+            document.getElementById('day15').style.border = '2px solid #27ae60';
+            document.getElementById('day15').style.borderRadius = '50%';
+            document.getElementById('day15').style.padding = '2px';
+            document.getElementById('day15').style.color = '#27ae60';
+            document.getElementById('day15').style.fontWeight = 'bold';
+        }
+
+        // ===== ФУНКЦИЯ ДЛЯ ПОКАЗА TOAST =====
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('successToast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+            
+            icon.textContent = isSuccess ? '✔' : '⚠️';
+            icon.className = 'check' + (isSuccess ? '' : ' error');
+            msg.textContent = message;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        // ===== ОТПРАВКА ФОРМЫ ЧЕРЕЗ GITHUB ACTIONS =====
+        document.getElementById("guestForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'ОТПРАВКА...';
+            
+            const name = document.getElementById("name").value.trim();
+            if (!name) {
+                showToast('Пожалуйста, укажите ваше имя', false);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ОТПРАВИТЬ';
+                return;
+            }
+            
+            const presenceElement = document.querySelector('input[name="presence"]:checked');
+            if (!presenceElement) {
+                showToast('Пожалуйста, выберите вариант ответа', false);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ОТПРАВИТЬ';
+                return;
+            }
+            
+            const presence = presenceElement.value;
+            const companion = document.getElementById("companion").value.trim() || "Нет";
+            
+            try {
+                // Формируем данные
+                const data = {
+                    name: name,
+                    presence: presence,
+                    companion: companion,
+                    group: group
+                };
+
+                // Отправляем на сервис-посредник (используем бесплатный webhook)
+                // Используем формате JSON и отправляем на бесплатный сервис
+                const response = await fetch('https://api.jsonbin.io/v3/b', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': '$2a$10$QhnCxkKJyEomRZhI.4nV8Oj7hxSzP.Zt7Jh6p6C3VSPExG5J0FYeK'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        presence: presence,
+                        companion: companion,
+                        group: group,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                if (response.ok) {
+                    showToast('Спасибо! Ваш ответ отправлен. Ждем вас!', true);
+                    console.log('✅ Ответ отправлен:', data);
+                    this.reset();
+                } else {
+                    // Пробуем альтернативный способ - создаем Issue через GitHub
+                    throw new Error('Ошибка отправки');
                 }
-
-                const data = await response.json();
-                allGuests = data.record.guests || [];
-                renderData();
-
             } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⚠️</div>
-                        <p>Ошибка загрузки данных. Проверьте подключение.</p>
-                    </div>
-                `;
+                console.error('Ошибка:', error);
+                
+                // Второй способ - пробуем через POST запрос к нашему репозиторию
+                try {
+                    const fallbackResponse = await fetch('https://api.github.com/repos/kapelka404/wedding1/issues', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            title: `[RSVP] ${name}`,
+                            body: `Имя: ${name}\nПрисутствие: ${presence}\nКомпания: ${companion}\nГруппа: ${group}`
+                        })
+                    });
+                    
+                    if (fallbackResponse.ok) {
+                        showToast('Спасибо! Ваш ответ отправлен. Ждем вас!', true);
+                        this.reset();
+                    } else {
+                        showToast('Ошибка при отправке. Попробуйте позже.', false);
+                    }
+                } catch (fallbackError) {
+                    showToast('Ошибка при отправке. Попробуйте позже.', false);
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ОТПРАВИТЬ';
             }
-        }
+        });
 
-        function renderData() {
-            const filtered = currentGroup === 'all' ? allGuests : allGuests.filter(g => g.group === currentGroup);
+        // ===== ТАЙМЕР =====
+        const weddingDate = new Date("2026-08-14T13:30:00+03:00").getTime();
+        const timer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
 
-            const groups = {
-                all: allGuests.length,
-                family: allGuests.filter(g => g.group === 'family').length,
-                relatives: allGuests.filter(g => g.group === 'relatives').length,
-                friend: allGuests.filter(g => g.group === 'friend').length
-            };
-
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                const group = btn.dataset.group;
-                const count = groups[group] || 0;
-                btn.innerHTML = btn.innerHTML.replace(/\(\d+\)/, `(${count})`);
-                btn.classList.toggle('active', group === currentGroup);
-            });
-
-            const total = allGuests.length;
-            const yes = allGuests.filter(g => g.presence && g.presence !== 'К сожалению, не смогу').length;
-            const no = allGuests.filter(g => g.presence === 'К сожалению, не смогу').length;
-
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('yesCount').textContent = yes;
-            document.getElementById('noCount').textContent = no;
-
-            const container = document.getElementById('responsesContainer');
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📭</div>
-                        <p>Пока нет ни одного ответа${currentGroup !== 'all' ? ' в этой группе' : ''}</p>
-                    </div>
-                `;
+            if (distance < 0) {
+                clearInterval(timer);
+                document.querySelector(".timer").innerHTML = "<h2>Свадьба уже сегодня!</h2>";
                 return;
             }
 
-            let html = `
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Имя</th>
-                                <th>Ответ</th>
-                                <th>Компания</th>
-                                <th>Группа</th>
-                                <th>Дата</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            filtered.forEach((g, index) => {
-                const isYes = g.presence && g.presence !== 'К сожалению, не смогу';
-                const statusClass = isYes ? 'status-yes' : 'status-no';
-                const date = g.created_at ? new Date(g.created_at).toLocaleString('ru-RU') : 'только что';
-                const groupLabel = getGroupLabel(g.group);
-                const groupClass = getGroupClass(g.group);
-
-                html += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${escapeHtml(g.name || 'Без имени')}</strong></td>
-                        <td class="${statusClass}">${escapeHtml(g.presence || 'Не указано')}</td>
-                        <td>${escapeHtml(g.companion || '—')}</td>
-                        <td><span class="group-label ${groupClass}">${groupLabel}</span></td>
-                        <td style="font-size: 12px; opacity: 0.7;">${date}</td>
-                    </tr>
-                `;
-            });
-
-            html += `</tbody></table></div>`;
-            container.innerHTML = html;
-        }
-
-        function exportToCSV() {
-            if (allGuests.length === 0) {
-                alert('Нет данных для экспорта.');
-                return;
-            }
-
-            const BOM = '\uFEFF';
-            let csv = BOM + 'Имя;Ответ;Компания;Группа;Дата\n';
-
-            allGuests.forEach(g => {
-                const date = g.created_at ? new Date(g.created_at).toLocaleString('ru-RU') : '';
-                const row = [
-                    `"${(g.name || '').replace(/"/g, '""')}"`,
-                    `"${(g.presence || '').replace(/"/g, '""')}"`,
-                    `"${(g.companion || '').replace(/"/g, '""')}"`,
-                    `"${getGroupLabel(g.group).replace(/"/g, '""')}"`,
-                    `"${date.replace(/"/g, '""')}"`
-                ];
-                csv += row.join(';') + '\n';
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            const now = new Date().toISOString().slice(0, 10);
-            link.download = `список_гостей_${now}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(link.href);
-        }
-
-        loadData();
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerText = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+        }, 1000);
     </script>
