@@ -478,8 +478,8 @@
             document.getElementById('day15').style.fontWeight = 'bold';
         }
 
-        // ===== ТОКЕН С ПОЛНЫМИ ПРАВАМИ =====
-        const GITHUB_TOKEN = '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';
+        // ===== ТОКЕН =====
+        const GITHUB_TOKEN = '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';
 
         // ===== ФУНКЦИЯ ДЛЯ ПОКАЗА TOAST =====
         function showToast(message, isSuccess = true) {
@@ -526,7 +526,6 @@
             const companion = document.getElementById("companion").value.trim() || "Нет";
             
             try {
-                // СОЗДАЕМ ISSUE
                 const response = await fetch('https://api.github.com/repos/kapelka404/wedding1/issues', {
                     method: 'POST',
                     headers: {
