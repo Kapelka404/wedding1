@@ -281,13 +281,11 @@
         let currentGroup = 'all';
         let allGuests = [];
 
-        // ===== ЗАГРУЗКА ДАННЫХ ИЗ ISSUES =====
         async function loadData() {
             const container = document.getElementById('responsesContainer');
             container.innerHTML = `<div class="loading">⏳ Загрузка данных...</div>`;
 
             try {
-                // Получаем все Issues с меткой rsvp
                 const response = await fetch('https://api.github.com/repos/kapelka404/wedding1/issues?state=all&labels=rsvp', {
                     headers: {
                         'Accept': 'application/vnd.github.v3+json'
@@ -302,7 +300,6 @@
                 allGuests = [];
 
                 issues.forEach(issue => {
-                    // Парсим тело Issue
                     const body = issue.body || '';
                     const name = body.match(/Имя: (.+)/)?.[1] || 'Без имени';
                     const presence = body.match(/Присутствие: (.+)/)?.[1] || 'Не указано';
@@ -463,7 +460,6 @@
             URL.revokeObjectURL(link.href);
         }
 
-        // Загружаем данные при старте
         loadData();
     </script>
 </body>
